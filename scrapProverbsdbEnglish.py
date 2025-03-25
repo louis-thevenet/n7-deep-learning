@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import time
 import os
 
-fileName = "theenglishdigest.txt"
+fileName = "scrapProverbsDbEnglish.txt"
 
 # Preventive to do not scrap twice the website above
 if os.path.exists( f"./{fileName}"):
@@ -15,12 +15,12 @@ if os.path.exists( f"./{fileName}"):
     exit(1)
 
 # Change this url to change website
-base_url = "https://theenglishdigest.com/a-list-of-1000-proverbs-in-english-with-their-meaning/"
+base_url = "https://www.proverbsdb.com/proverb-nation/991880/english-proverb"
 page = requests.get(base_url)
 soup = BeautifulSoup(page.content, "html.parser")
 
 # Recherche des proverbes 
-proverb_elts = soup.find_all("h4")
+proverb_elts = soup.find_all("span", class_="text")
 
 # Use mode 'a' to append to the database
 with open(fileName, "a") as f:
@@ -33,7 +33,7 @@ with open(fileName, "a") as f:
 
 
 # If website contains multiple pages following the same patern
-for page in range(2, 1):
+for page in range(2, 101):
     print(f"ON PAGE : {page}\n")
     url = base_url + f"/{page}"
     try:
