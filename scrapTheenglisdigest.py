@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
+#Vérification de l'existence du fichier de sortie
 fileName = "scrapTheEnglishDigest.txt"
 
 # Preventive to do not scrap twice the website above
@@ -13,15 +14,16 @@ if os.path.exists( f"./{fileName}"):
     print(f"File exists : {fileName}")
     exit(1)
 
+#Scraping du site web
 # Change this url to change website
 base_url = "https://theenglishdigest.com/a-list-of-1000-proverbs-in-english-with-their-meaning/"
 page = requests.get(base_url)
 soup = BeautifulSoup(page.content, "html.parser")
 
-# Recherche des proverbes 
+# Recherche des proverbes ,Extraction des proverbes
 proverb_elts = soup.find_all("h4")
 
-# Use mode 'a' to append to the database
+# Use mode 'a' to append to the database,. Enregistrement des proverbes dans un fichier
 with open(fileName, "a") as f:
 
     for title in proverb_elts:
@@ -29,6 +31,7 @@ with open(fileName, "a") as f:
         print(title.get_text())
     f.close()
 
+#Suppression des lignes contenant "1000"
 with open(fileName, "r") as fp:
     lines = fp.readlines()
 fp.close()
