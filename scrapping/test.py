@@ -33,5 +33,3 @@ def check_phrases(txt_file, jsonl_file, output_not_found):
     print(f"Nombre de phrases trouvées dans le JSONL : {found_count}")
     print(f"Nombre de phrases non trouvées : {len(not_found_phrases)} (stockées dans {output_not_found})")
 
-# Exemple d'utilisation
-check_phrases("theenglishdigest.txt", "proverbs.jsonl", "not_found_phrases.txt")

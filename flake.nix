@@ -31,6 +31,8 @@
                 python-pkgs: with python-pkgs; [
                   requests
                   beautifulsoup4
+                  ipython
+                  jupyter
                 ]
               ))
             ];
