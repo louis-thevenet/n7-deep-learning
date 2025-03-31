@@ -1,3 +1,4 @@
+Dans le repertoire scrapping, se trouve 02 fichiers, versions precedentes simples pour le scrapping
 scrapper.py : version pour scrapper et classer chaque proverbe par topic. 
 Pour chaque topic, ca va creer un fichier de même nom regroupant tous les
 proverbes de ce topic. Les topics seront groupés par lettre de début du mot du topic.
@@ -5,5 +6,17 @@ proverbes de ce topic. Les topics seront groupés par lettre de début du mot du
 
 scrapper_csv.py: version pour tout mettre dans un fichier csv en labellisant avec le topic.
 
-Comme le téléchargement prennait du temps, scrapp_parallel.py version pour acceler le processus de telechargement 
+
+Comme le téléchargement prennait du temps, scrap_parallel.py version pour accelerer le processus de telechargement 
 (juste 5-7min voir moins en fonction de votre debit )
+
+
+clean.py : fichier pour nettoyer et elimner les doublons depuis le fichier csv obtenu par scrap_parallel.py.
+test.py: pour lire le fichier scrappé "the theenglishdigest.txt" et regarder les proverbes qui sont déjà dans proverbs.jsonl, ceux qui ne le sont pas
+seront mis dans un fichier not_found.phrases.txt // je sais pas quoi faire d'eux en bref comment les ajouter
+
+
+Scenario
+Lancer scrap.parallel.py
+Puis attendre la fin (5min environ max)
+Puis lancer clean.py --> sortie proverbs.jsonl
