@@ -24,3 +24,7 @@ seront mis dans un fichier not_found.phrases.txt (difficilement exploitable)
 Lancer `scrap_parallel.py`
 Puis attendre la fin (5min environ max)
 Puis lancer `clean.py` --> sortie `proverbs.jsonl`
+
+## Sources
+
+Les sites contenus dans `scrappedWebsite.txt` nous ont été utiles.
