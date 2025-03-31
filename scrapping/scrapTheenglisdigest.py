@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import os
 def save_to_file(fileName):
     if os.path.exists( f"./{fileName}"):
-        print(f"File already exists : {fileName}")
-        return
+        os.remove(fileName)
+
 
     #Scraping du site web
     # Change this url to change website
