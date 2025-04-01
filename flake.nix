@@ -33,6 +33,11 @@
                   beautifulsoup4
                   ipython
                   jupyter
+                  transformers
+                  datasets
+                  peft
+                  accelerate
+                  bitsandbytes
                 ]
               ))
             ];
