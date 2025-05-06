@@ -1,4 +1,4 @@
-#import "@preview/codelst:2.0.1": sourcecode
+#import "@preview/codelst:2.0.2": sourcecode
 
 #let column_names(topic, names) = {
   topic += if names.len() > 1 { "s" } else { "" } + " : "
