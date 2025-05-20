@@ -94,5 +94,5 @@ def load_datawith_topics():
     with open(file, "r") as f:
         lines = f.readlines()
     f.close()
-    data[file] = [line.replace("{", "").replace("}", "").replace('"', "").strip() for line in lines]
+    data[file] = ["### : " + line.replace("{", "").replace("}", "").replace('"', "").replace("proverb:", "\n\n### proverb: ").strip() for line in lines]
     return data
