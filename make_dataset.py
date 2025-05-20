@@ -94,5 +94,22 @@ def load_data_with_topics():
     with open(file, "r") as f:
         lines = f.readlines()
     f.close()
-    data[file] = [line.replace("{", "").replace("topics: ", "### topics : ").replace("],", "]").replace("}", "").replace('"', "").replace("proverb:", "\n\n### proverb: ").strip() for line in lines]
+    data[file] = []
+    for line in lines:
+        nline = line.replace("{", "")
+        print("nline1 = ", nline)
+        nline = nline.replace("],", "]")
+        print("nline2 = ", nline)
+        nline = nline.replace("}", "")
+        print("nline3 = ", nline)
+        nline = nline.replace('"', "")
+        print("nline4 = ", nline)
+        nline = nline.replace("topics:", "### topics :")
+        print("nline5 = ", nline)
+        nline = nline.replace("proverb:", "\n\n### proverb: ")
+
+        print("nlinef = ", nline)
+
+        data[file].append(nline.strip())
+        
     return data
