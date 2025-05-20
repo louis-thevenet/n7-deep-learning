@@ -82,7 +82,7 @@ def load_data():
         data[file] = [line.strip() for line in lines]
     return data
 
-def load_datawith_topics():
+def load_data_with_topics():
     """
     Load data from the cleaned files with topics.
     """
@@ -94,5 +94,5 @@ def load_datawith_topics():
     with open(file, "r") as f:
         lines = f.readlines()
     f.close()
-    data[file] = ["### : " + line.replace("{", "").replace("}", "").replace('"', "").replace("proverb:", "\n\n### proverb: ").strip() for line in lines]
+    data[file] = [line.replace("{", "").replace("topics: ", "### topics : ").replace("],", "]").replace("}", "").replace('"', "").replace("proverb:", "\n\n### proverb: ").strip() for line in lines]
     return data
