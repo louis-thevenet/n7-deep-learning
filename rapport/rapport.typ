@@ -176,18 +176,18 @@ Proverbes obtenus à partir de "A" :
   columns: 2,
   [Proverbe], [Commentaire],
   [A man's only dead when he eats his own. ], [Intéressant],
-  [A man can make a woman forget her brother's death. ], [Etrange],
-  [A man's heart is full of gold. ], [Intéressant],
-  [A good thing is a good thing. ], [Effectivement],
+  [A man can make a woman forget her brother's death. ], [Pas un proverbe],
+  [A man's heart is full of gold. ], [Pas un proverbe],
+  [A good thing is a good thing. ], [Pas un proverbe],
   [A woman’s dream is to be a widow. ], [Etrange],
-  [A man dies in the wind, a horse dies in the wind ], [Etrange],
+  [A man dies in the wind, a horse dies in the wind ], [Pas un proverbe],
   [A good example of a good example of a good example of a bad example of a bad example of a bad example. ],
   [Incohérent],
 
   [A few days before you start a new one, you will be remembered for a long time. ],
   [Incohérent],
 
-  [A little of light can be a good thing ], [Intéressant],
+  [A little of light can be a good thing ], [Pas un proverbe],
 )
 
 
@@ -203,15 +203,14 @@ Proverbes obtenus à partir de "Some" :
   [Some times the best is when you are there to be with. ], [Incohérent],
   [Some people have a disease. ], [Etrange],
   [Some people are better than others. ], [Intéressant],
-  rows: 1,
   [Some of us are better than others ], [Intéressant],
   [Some people are too silly to forget. ], [Intéressant],
-  [Some of those is nothing compared to the sum of them ],
-  [Etrange/Intéressant],
+  [Some of those is nothing compared to the sum of them ], [Intéressant],
 )
 
 / Intéressants: 9
-/ Etranges: 4
+/ Etranges: 2
+/ Pas un proverbe: 5
 / Incohérents: 4
 
 
@@ -224,26 +223,26 @@ Exemple de sorties pour "This" :
 #table(
   columns: 2,
   [Proverbe], [Commentaire],
-  [This is the story of an old woman.], [Etrange],
-  [This is the way of the world.], [Intéressant],
-  [This is the best.], [Etrange],
-  [This is the way to get your money's worth.], [Intéressant],
-  [This is the day.], [Etrange],
-  [This is what you call a new dress.], [Etrange],
-  [This is a story about a little girl.], [Etrange],
+  [This is the story of an old woman.], [Pas un proverbe],
+  [This is the way of the world.], [Pas un proverbe],
+  [This is the best.], [Pas un proverbe],
+  [This is the way to get your money's worth.], [Pas un proverbe],
+  [This is the day.], [Pas un proverbe],
+  [This is what you call a new dress.], [Pas un proverbe],
+  [This is a story about a little girl.], [Pas un proverbe],
   [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.],
-  [Etrange],
+  [Pas un proverbe],
 
-  [This is what happens when we start out on the wrong path.], [Etrange],
-  [This is my favourite drink.], [Etrange],
+  [This is what happens when we start out on the wrong path.],
+  [Pas un proverbe],
+
+  [This is my favourite drink.], [Pas un proverbe],
 )
 
-/ Intéressants: 2
-/ Etranges: 8
+/ Intéressants: 0
+/ Etrange: 0
+/ Pas un proverbe: 10
 / Incohérents: 0
-
-
-ICI AJOUTER LES "PAS UN PROVERBE"
 
 
 Le modèle de base étant plus important, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants.
@@ -251,6 +250,50 @@ Le modèle de base étant plus important, il ne crée pas de résultat incohére
 == Entraînement sur les proverbes traduits
 === Modèle de départ `facebook/opt-125m`
 On entraîne d'abord sur *20000* proverbes.
+
+#table(
+  columns: 2,
+  [Proverbe], [Commentaire],
+  [Some men are good at it, some are bad at it, and some are good at it.],
+  [Incohérent],
+
+  [Some day people will get one.], [Pas un proverbe],
+  [Some days a man wears a leather jacket and a woman wears a leather garment.],
+  [Pas un proverbe],
+
+  [Somehow the worst person in the world can make the best at things.],
+  [Étrange],
+
+  [Somehow, I am not a thief.], [Pas un proverbe],
+  [Some people are more beautiful than others.], [Pas un proverbe],
+  [Some day, the sun will rise on a mountain.], [Incohérent],
+  [Someones got a good idea and they're good at it.], [Pas un proverbe],
+  [Some men have a heart to die for.], [Intéressant],
+  [Somehow it looks like a human's ear.], [Incohérent],
+)
+)
+#table(
+  columns: 2,
+  [Proverbe], [Commentaire],
+  [A dog is a beast of a mind.], [Incohérent],
+  [A man who makes his wife cry is a thief.], [Étrange],
+  [A man's heart is not a dog's tongue.], [Incohérent],
+  [A girl may be a good girl, but she has a better chance of getting married.],
+  [Étrange],
+
+  [A man who has never seen a woman is a man.], [Incohérent],
+  [A house that is just a house is not a house that is a house.], [Incohérent],
+  [A man who will not sleep for an hour, will not sleep for an hour.],
+  [Incohérent],
+
+  [A man cannot take a wife.], [Pas un proverbe],
+  [A man who eats meat will not be a judge.], [Étrange],
+  [A bit of good luck in life is better than nothing.], [Intéressant],
+)
+
+LES DEUX TABLEAUX PRÉCÉDENTS ONT ÉTÉ FAIT PAR CHATGPT ET PAS MOI.
+
+
 === Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 La RAM disponible ne nous a permis que de sélectionner un maximum de 5000 proverbes.
 
