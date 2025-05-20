@@ -243,6 +243,9 @@ Exemple de sorties pour "This" :
 / Incohérents: 0
 
 
+ICI AJOUTER LES "PAS UN PROVERBE"
+
+
 Le modèle de base étant plus important, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants.
 
 == Entraînement sur les proverbes traduits
@@ -290,9 +293,11 @@ Cependant, on obtient quand même des résultats plus intéressants qu'avec $320
   [Some are born great, but some become great by their wit.], [Intéressant],
   [Someone is not what you think about him; you think about him.], [Incohérent],
 )
-/ Intéressants:
-/ Etranges:
-/ Incohérents:
+/ Intéressants: 11
+/ Etranges: 2
+/ Incohérents: 5
+/ Pas un proverbe: 2
 
+Comme précédemment, ce modèle peu de résultat incohérents. On constate qu'on obtient des résultats plus intéressant avec ce dataset plus important.
 
 = Conclusion
