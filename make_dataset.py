@@ -82,4 +82,17 @@ def load_data():
         data[file] = [line.strip() for line in lines]
     return data
 
-    
+def load_datawith_topics():
+    """
+    Load data from the cleaned files with topics.
+    """
+    if not os.path.exists("proverbs.jsonl"):
+        clean_data(download_data())
+
+    file = "proverbs.jsonl"
+    data = {}
+    with open(file, "r") as f:
+        lines = f.readlines()
+    f.close()
+    data[file] = [line.replace("{", "").replace("}", "").replace('"', "").strip() for line in lines]
+    return data
