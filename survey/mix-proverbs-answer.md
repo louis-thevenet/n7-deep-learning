@@ -20,7 +20,7 @@ A young child is not born in spite of his own mother. : generated 11/18
 
 Set your own goals. An arrow, a sword, and a bottle of wine are enough to keep you from leaving your wife. : generated 13/18
 
-All men can’t be first. : real 4/14
+All men can’t be first. : real 14/18
 
 Don't celebrate until you are across the brook. : real 10/18
 
@@ -47,3 +47,9 @@ Do not drink in advance on the hide of a bear. : real 3/18
 A man's clothing can only last one lifetime. : generated 9/18
 
 The musician who is paid in advance does not play so well. : real 9/18
+
+---
+
+Total of 232/432 good answers : approx 0,53 accuracy
+
+Based on answers of teachers from SHS and other professions
