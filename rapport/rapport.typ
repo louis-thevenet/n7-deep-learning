@@ -224,24 +224,75 @@ Exemple de sorties pour "This" :
 #table(
   columns: 2,
   [Proverbe], [Commentaire],
-  [This is the story of an old woman.], [],
-  [This is the way of the world.], [],
-  [This is the best.], [],
-  [This is the way to get your money's worth.], [],
-  [This is the day.], [],
-  [This is what you call a new dress.], [],
-  [This is a story about a little girl.], [],
+  [This is the story of an old woman.], [Etrange],
+  [This is the way of the world.], [Intéressant],
+  [This is the best.], [Etrange],
+  [This is the way to get your money's worth.], [Intéressant],
+  [This is the day.], [Etrange],
+  [This is what you call a new dress.], [Etrange],
+  [This is a story about a little girl.], [Etrange],
   [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.],
-  [],
+  [Etrange],
 
-  [This is what happens when we start out on the wrong path.], [],
-  [This is my favourite drink.], [],
+  [This is what happens when we start out on the wrong path.], [Etrange],
+  [This is my favourite drink.], [Etrange],
 )
+
+/ Intéressants: 2
+/ Etranges: 8
+/ Incohérents: 0
+
+
+Le modèle de base étant plus important, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants.
+
 == Entraînement sur les proverbes traduits
 === Modèle de départ `facebook/opt-125m`
 On entraîne d'abord sur *20000* proverbes.
 === Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 La RAM disponible ne nous a permis que de sélectionner un maximum de 5000 proverbes.
+
+Cependant, on obtient quand même des résultats plus intéressants qu'avec $3208$ proverbes
+
+#table(
+  columns: 2,
+  [Proverbe], [Commentaire],
+  [A man's name is his life.], [Intéressant],
+  [A man who has never taken a step should never be trusted.], [Intéressant],
+  [A great king cannot be a great man.], [Intéressant],
+  [A woman is hard to handle, but easy to cheat.], [Étrange],
+  [A dog's nose is better than a man's eyes.], [Intéressant],
+  [A woman who has a good head cannot be a fool.], [Intéressant],
+  [A bird from a city is a nesting place for many.], [Incohérent],
+  [A little knowledge is better than a great ignorance.], [Intéressant],
+  [A man who speaks of a hundred will be thought a hundred.], [Incohérent],
+  [A man should not be too ambitious.], [Intéressant],
+)
+
+#table(
+  columns: 2,
+  [Proverbe], [Commentaire],
+  [Some men are born to lead, and some to follow.], [Intéressant],
+  [Some men are so proud of their looks that they never look at the rest of their faces.],
+  [Étrange],
+
+  [Someone will not be able to find a wife whom his father chooses.],
+  [Pas un proverbe],
+
+  [Some things are good for the body, but not for the stomach.], [Intéressant],
+  [Some are born with the gift of knowledge, and some with the gift of ignorance.],
+  [Intéressant],
+
+  [Some folks make their own pies, and some do not.], [Pas un proverbe],
+  [Some people call the wind the sun's enemy.], [Incohérent],
+  [Some are wiser than they know. Humor as a way of life is also a part of the world I have to live in.],
+  [Incohérent],
+
+  [Some are born great, but some become great by their wit.], [Intéressant],
+  [Someone is not what you think about him; you think about him.], [Incohérent],
+)
+/ Intéressants:
+/ Etranges:
+/ Incohérents:
 
 
 = Conclusion
