@@ -188,15 +188,15 @@ Quelques proverbes obtenus:
 Les données de sortie étant des proverbes, elles sont difficilement évaluables et comparables, et sont sujettes à l'appréciation humaine.
 
 Ainsi nous donnerons quelques résultats non filtrés à titre d'exemple, issus du fine tuning de différents modèles que nous commenterons. Puis dans une seconde partie, nous détaillerons une expérience que nous avons réalisé.
-
-== Entraînement sur les proverbes anglais
+== Génération de proverbes sans thème
+=== Entraînement sur les proverbes anglais
 On utilise ici les deux sources :
 - `proverbs_db_only_english.txt`
 - `proverbs_digest.txt`
 
 Pour rappel, cette base de données représente 3208 proverbes originaux en anglais.
-=== Modèle de départ `facebook/opt-125m`
-#figure(caption: [En parant de "A"])[
+==== Modèle de départ `facebook/opt-125m`
+#figure(caption: [En partant de "A"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -217,7 +217,7 @@ Pour rappel, cette base de données représente 3208 proverbes originaux en angl
 ]
 
 
-#figure(caption: [En parant de "Some"])[
+#figure(caption: [En partant de "Some"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -242,10 +242,10 @@ Pour rappel, cette base de données représente 3208 proverbes originaux en angl
 
 On constate que certains résultats sont incohérents ou étranges. Certains proverbes ressemblent plus à des vérités générales et on trouve quelques proverbes intéressants.
 
-=== Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
+==== Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 Les données sélectionnées ne sont pas assez importantes pour obtenir des résultats satisfaisants avec ce modèle.
 
-#figure(caption: [En parant de "This"])[
+#figure(caption: [En partant de "This"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -274,10 +274,10 @@ Les données sélectionnées ne sont pas assez importantes pour obtenir des rés
 
 Le modèle de base étant plus important et donc déjà plus entraîné, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants. Peu de proverbes commencent par "Some" dans le dataset. ($4 / 3208 approx #calc.round(100 * 4 / 3208, digits: 2) %$)
 
-== Entraînement sur les proverbes traduits
-=== Modèle de départ `facebook/opt-125m`
+=== Entraînement sur les proverbes traduits
+==== Modèle de départ `facebook/opt-125m`
 On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, digits: 2) %$).
-#figure(caption: [En parant de "Some"])[
+#figure(caption: [En partant de "Some"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -299,7 +299,7 @@ On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, di
     [Somehow it looks like a human's ear.], [Incohérent],
   )
 ]
-#figure(caption: [En parant de "A"])[
+#figure(caption: [En partant de "A"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -326,12 +326,12 @@ On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, di
 Pas ouf ces résultats, faudrait réentrainer sur moins de données et savoir l'expliquer
 #line(start: (0cm, 0cm), end: (15cm, 0cm), stroke: red)
 
-=== Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
+==== Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 La RAM disponible ne nous a permis que de sélectionner un maximum de 5000 proverbes.
 
 Cependant, on obtient quand même des résultats plus intéressants qu'avec $3208$ proverbes
 
-#figure(caption: [En parant de "Some"])[
+#figure(caption: [En partant de "Some"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -358,7 +358,7 @@ Cependant, on obtient quand même des résultats plus intéressants qu'avec $320
     [Incohérent],
   )
 ]
-#figure(caption: [En parant de "A"])[
+#figure(caption: [En partant de "A"])[
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
@@ -382,7 +382,274 @@ Cependant, on obtient quand même des résultats plus intéressants qu'avec $320
 
 Comme précédemment, ce modèle produit peu de résultat incohérents. On constate qu'on obtient des résultats plus intéressant avec ce dataset plus important, plus adapté à la taille du modèle de base.
 
-== Expérience avec des humains
-A titre d'expérience, nous avons rassemblé quelques dizaines de proverbes originaux et générés par nos modèles. (`facebook/opt-125m` sur $approx 15000$ proverbes)
+
+=== Expérience avec des humains
+A titre d'expérience, nous avons rassemblé $24$ proverbes originaux et générés par nos modèles. (`facebook/opt-125m` sur $approx 15000$ proverbes) Nous avons demandé à $18$ personnes (des professeurs de SHS notamment) de classer chaque proverbe à l'aveugle.
+#let total = 18
+#let proverb_count = 24
+#let result = (
+  (
+    proverb: "The horse that is not ridden is worse than the horse that is not ridden.",
+    generated: [Oui],
+    result: 18,
+    success_rate: $#calc.round(100 * 18 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Set a fire and burn it.",
+    generated: [Oui],
+    result: 11,
+    success_rate: $#calc.round(100 * 11 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Think and thank god.",
+    generated: [Non],
+    result: 8,
+    success_rate: $#calc.round(100 * 8 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "The best way to see divine light is to put out your own candle.",
+    generated: [Non],
+    result: 12,
+    success_rate: $#calc.round(100 * 12 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "The riches of the mind may make a man rich and happy.",
+    generated: [Non],
+    result: 9,
+    success_rate: $#calc.round(100 * 9 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Who pays in advance eats stinking fish.",
+    generated: [Non],
+    result: 6,
+    success_rate: $#calc.round(100 * 6 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "The nail that sticks out gets pounded.",
+    generated: [Non],
+    result: 12,
+    success_rate: $#calc.round(100 * 12 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Work paid for in advance has feet of lead.",
+    generated: [Non],
+    result: 4,
+    success_rate: $#calc.round(100 * 4 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "A young child is not born in spite of his own mother.",
+    generated: [Oui],
+    result: 11,
+    success_rate: $#calc.round(100 * 11 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Set your own goals. An arrow, a sword, and a bottle of wine are enough to keep you from leaving your wife.",
+    generated: [Oui],
+    result: 13,
+    success_rate: $#calc.round(100 * 13 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "All men can’t be first.",
+    generated: [Non],
+    result: 14,
+    success_rate: $#calc.round(100 * 14 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Don't celebrate until you are across the brook.",
+    generated: [Non],
+    result: 10,
+    success_rate: $#calc.round(100 * 10 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Such carpenters, such chips.",
+    generated: [Non],
+    result: 2,
+    success_rate: $#calc.round(100 * 2 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "A person's only hope is to give him a good laugh.",
+    generated: [Oui],
+    result: 15,
+    success_rate: $#calc.round(100 * 15 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "To pay one back in one’s own coin.",
+    generated: [Non],
+    result: 6,
+    success_rate: $#calc.round(100 * 6 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "An English friend is a friend.",
+    generated: [Oui],
+    result: 15,
+    success_rate: $#calc.round(100 * 15 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Romeo must die in order to save the love.",
+    generated: [Non],
+    result: 3,
+    success_rate: $#calc.round(100 * 3 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "The only thing that can be done is to make them believe that they are not going to die.",
+    generated: [Oui],
+    result: 9,
+    success_rate: $#calc.round(100 * 9 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "To be or not to be, you have to be.",
+    generated: [Oui],
+    result: 14,
+    success_rate: $#calc.round(100 * 14 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Children are poor men’s riches.",
+    generated: [Non],
+    result: 3,
+    success_rate: $#calc.round(100 * 3 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "He, that would eat the fruit, must climb the tree.",
+    generated: [Non],
+    result: 16,
+    success_rate: $#calc.round(100 * 16 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "Do not drink in advance on the hide of a bear.",
+    generated: [Non],
+    result: 3,
+    success_rate: $#calc.round(100 * 3 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "A man's clothing can only last one lifetime.",
+    generated: [Oui],
+    result: 9,
+    success_rate: $#calc.round(100 * 9 / total, digits: 2)%$,
+  ),
+  (
+    proverb: "The musician who is paid in advance does not play so well.",
+    generated: [Non],
+    result: 9,
+    success_rate: $#calc.round(100 * 9 / total, digits: 2)%$,
+  ),
+)
+
+#let table-json(data) = {
+  data = data.map(v => {
+    (
+      Proverbe: v.proverb,
+      Generé: v.generated,
+      TauxSuccès: v.success_rate,
+    )
+  })
+  let keys = data.at(0).keys()
+
+  table(
+    columns: keys.len(),
+    ..keys,
+    ..data.map(row => keys.map(key => row.at(key, default: [n/a]))).flatten()
+  )
+}
+#figure(caption: "Résultats de l'éxpérience par proverbe")[#table-json(result)]
+
+
+#let non_gen_correct = (
+  result.filter(e => e.generated == [Non]).map(e => e.result).sum()
+)
+#let gen_correct = (
+  result.filter(e => e.generated == [Oui]).map(e => e.result).sum()
+)
+#let non_gen_incorrect = (
+  result.filter(e => e.generated == [Non]).map(e => total - e.result).sum()
+)
+#let gen_incorrect = (
+  result.filter(e => e.generated == [Oui]).map(e => total - e.result).sum()
+)
+#let prov_times_answer = proverb_count * total
+#figure(caption: "Résultats de l'expérience")[
+
+  #table(
+    columns: 4,
+    [], [Générés], [Non générés], [Total ($%$)],
+    [Bien détéctés],
+    [#gen_correct],
+    [#non_gen_correct],
+    [#{
+        calc.round(
+          100 * (gen_correct + non_gen_correct) / prov_times_answer,
+          digits: 3,
+        )
+      }
+    ],
+
+    [Mal détéctés],
+    [#non_gen_incorrect],
+    [#gen_incorrect],
+    [#{
+        calc.round(
+          100 * (non_gen_incorrect + gen_incorrect) / prov_times_answer,
+          digits: 3,
+        )
+      }
+    ],
+
+    [Total ($%$)],
+    [#{
+        calc.round(
+          100 * (gen_correct + gen_incorrect) / prov_times_answer,
+          digits: 3,
+        )
+      }],
+    [#{
+        calc.round(
+          100 * (non_gen_correct + non_gen_incorrect) / prov_times_answer,
+          digits: 3,
+        )
+      }
+    ],
+    [#{
+        (
+          calc.round(
+            100
+              * (
+                gen_correct
+                  + gen_incorrect
+                  + non_gen_correct
+                  + non_gen_incorrect
+              )
+              / prov_times_answer,
+            digits: 3,
+          )
+        )
+      }
+    ],
+  )
+]
+
+== Génération avec thème
+
+On a ici entraîné le modèle `facebook/opt-125m` sur $20000$ proverbes ($#calc.round(100 * 20000 / 35000, digits: 2) %$) annotés avec leurs thèmes ($1$ heure d'entraînement).
+#figure(caption: [Avec le thème "Love"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [The love of one is not always the love of all. ], [Intéressant],
+    [If you love a woman, she will be love. ], [Etrange],
+    [If you love a man, you will be love.], [Etrange],
+    [Love is love, and with love we can go out of love and into another. ],
+    [Etrange],
+
+    [Love is the best proverb. ], [Intéressant],
+    [It is a good proverb, but a proverb is better. ], [Incohérent],
+    [Love has no love. ], [Etrange],
+    [It is love that first love is in the end. ], [Intéressant],
+    [Never in love. It's not love. ], [Intéressant],
+    [Love the love of the love of peace, and the love of the love of the love of the love of the peace... ],
+    [Incohérent],
+
+    [The woman heches the dog, but the man sheches the dog. ], [Etrange],
+    [If love can't be found or found without fear, it can't be found without fear. ],
+    [Etrange],
+  )]
 
 = Conclusion
