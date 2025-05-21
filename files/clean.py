@@ -53,8 +53,8 @@ def clean_dataset_to_json(csv_file, output_json_file='proverbs.jsonl'):
     json_data = []
     for proverb, data in proverb_topics.items():
         json_data.append({
-            "topics": data['topics'], 
-            "proverb": data['original_proverb']
+            "### topics": data['topics'], 
+            "### proverb": data['original_proverb']
         })
     
     print(f"Nombre de proverbes après regroupement des thèmes: {len(json_data)}")
