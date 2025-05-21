@@ -41,35 +41,57 @@ Puisqu'il est plus simple de trouver des données en langue anglaise, nous avons
 
 Nous avons $3200$ proverbes originaux anglais et $35000$ proverbes en incluant des proverbes traduits d'autres langues et prévoyons de tester le modèle sur ces deux bases.
 
-== Partionnement des données
+Nous également constitué une base de données de proverbes annotés avec leurs thèmes.
 
-Nous avons choisi de partionner les données de la manière suivante qui est un standart dans l'apprentissage profond :
-- 80% des données pour l'apprentissage
-- 10% des données pour le test
-- 10% des données pour la validation
+Voici quelques exemples :
+#figure(caption: "Extrait des proverbes annotés")[
+  #sourcecode()[```json
+    {
+      "topics": ["Advantage"],
+      "proverb": "When a rich man caresses a poor man, he's going to take advantage of him."
+    }
+    {
+      "topics": ["Advantage"],
+      "proverb": "Every advantage has its disadvantage."
+    }
+    {
+      "topics": ["Advantage", "Vain"],
+      "proverb": "He is wise in vain who does not use his wisdom for his own advantage."
+    }
+    ```
+  ]]
+// == Partionnement des données
 
-Nous pourrons augmenter la part d'apprentissage si le manque de donnée a un impact trop important.
+// Nous avons choisi de partionner les données de la manière suivante qui est un standart dans l'apprentissage profond :
+// - 80% des données pour l'apprentissage
+// - 10% des données pour le test
+// - 10% des données pour la validation
+
+// Nous pourrons augmenter la part d'apprentissage si le manque de donnée a un impact trop important.
 
 
 == Script de chargement des données
 
 Nous avons réalisé un script de téléchargement et traitement des données. Un exemple d'utilisation est donné dans le fichier `main.ipynb`, il suffit d'appeler le fonction `make_dataset.load_data()` qui renvoie les proverbes classés par sources.
 
-#sourcecode()[```
-  proverbs_db.txt: 34142 proverbs
-  proverbs_db_only_english.txt: 2208 proverbs
-  proverbs_digest.txt: 1000 proverbs
-  Total: 37350 proverbs
-  Total length: 1853527 characters
+#figure(caption: "Proverbes non annotés")[
+  #sourcecode()[```
+    proverbs_db.txt: 34142 proverbs
+    proverbs_db_only_english.txt: 2208 proverbs
+    proverbs_digest.txt: 1000 proverbs
+    Total: 37350 proverbs
+    Total length: 1853527 characters
 
 
-  Examples of proverbs:
-  Money's for buying and a horse is for riding.
-  A set of white teeth does not indicate a pure heart.
-  Time discloses the truth.
-  The earth has ears, the wind has a voice.
-  The fox will catch you with cunning, and the wolf with courage.
-  ```]
+    Examples of proverbs:
+    Money's for buying and a horse is for riding.
+    A set of white teeth does not indicate a pure heart.
+    Time discloses the truth.
+    The earth has ears, the wind has a voice.
+    The fox will catch you with cunning, and the wolf with courage.
+    ```]
+]
+De même, la fonction `make_dataset.load_data_with_topics()` renvoie un dataset de données annotées.
 
 
 // Une seconde partie (~5-7 pages) où vous décrirez de façon détaillée votre modèle et son entraînement. Dans cette partie du projet, vous devez avoir à l'esprit pendant votre rédaction que je dois disposer de toutes les informations nécessaires pour reproduire votre travail (liste exhaustive d'hyperparamètres, description détaillée du ou des réseau.x, éventuelles simplifications de la base de données, etc.)
@@ -83,75 +105,78 @@ Nous testerons également de partir du modèle #link("https://huggingface.co/Tin
 
 On charge le modèle et son Tokenizer à l'aide des fonctions `AutoModelForCausalLM.from_pretrained()` et `AutoTokenizer.from_pretrained()` de la librarie `transformers`.
 
-On décide des sources de proverbes que l'on va utiliser, puis on les fusionne en une seule liste:
-#sourcecode()[```python
-  selected_proverbs_groups = [
-      "proverbs_db.txt",
-      "proverbs_digest.txt"
-  ]
+On décide des sources de proverbes que l'on va utiliser, puis on les fusionne en une seule liste.
+#figure(caption: "Fusion des listes sélectionnées")[
+  #sourcecode()[```python
+    selected_proverbs_groups = [
+        "proverbs_db.txt",
+        "proverbs_digest.txt"
+    ]
 
-  proverbs = []
-  for group in selected_proverbs_groups:
-      proverbs.extend(all_proverbs[group])  ```]
+    proverbs = []
+    for group in selected_proverbs_groups:
+        proverbs.extend(all_proverbs[group])
+    ```]]
 
 
 On utilise ensuite la librarie `datasets` pour préparer ces données à l'entraînement. La tokenisation du dataset consiste à calculer la taille du proverbe le plus long et ajouter du padding aux autres pour uniformiser les tailles.
 
 On utilise ensuite la librarie `peft` afin d'utiliser la technique LoRA (Low-Rank Adaptation). Ainsi, on ajoute un petit nombre de nouveaux paramètres entraînables au modèle afin de l'adapter à la nouvelle tâche.
-
-Paramètres de la configuration LoRA:
-#sourcecode()[```python
-  LoraConfig(
-      r=8,
-      lora_alpha=16,
-      target_modules=["q_proj", "v_proj"],
-      lora_dropout=0.05,
-      bias="none",
-      task_type="CAUSAL_LM"
-  )  ```
-]
+#figure(caption: [Configuration LoRA])[#sourcecode()[```python
+    LoraConfig(
+        r=8,
+        lora_alpha=16,
+        target_modules=["q_proj", "v_proj"],
+        lora_dropout=0.05,
+        bias="none",
+        task_type="CAUSAL_LM"
+    )  ```
+  ]]
 La méthode `get_peft_model` permet d'obtenir un nouveau modèle à partir de cette configuration de notre modèle initial.
 
 == Entraînement
 A l'aide de la librarie `transformers`, on définit les paramètres d'entraînement:
 
-#sourcecode([
-  ```python
-  TrainingArguments(
-      output_dir="./results",
-      per_device_train_batch_size=8,
-      per_device_eval_batch_size=8,
-      num_train_epochs=1,
-      logging_dir='./logs',
-      logging_steps=10,
-      eval_strategy="no",
-      save_strategy="epoch",
-      report_to="none"
-  )
+#figure(caption: [Paramètres d'entraînement du modèle])[
+  #sourcecode()[
+    ```python
+    TrainingArguments(
+        output_dir="./results",
+        per_device_train_batch_size=8,
+        per_device_eval_batch_size=8,
+        num_train_epochs=1,
+        logging_dir='./logs',
+        logging_steps=10,
+        eval_strategy="no",
+        save_strategy="epoch",
+        report_to="none"
+    )
 
-  ```
-])
+    ```
+  ]]
 
 Finalement, on met en commun notre modèle, nos paramètres d'entraînement, notre dataset tokenisé et notre tokeniser via la classe `Trainer` et on peut lancer l'entraînement avec la méthode `train()`.
 
 == Génération
 
-Après entraînement du modèle, on crée un pipeline de génération:
-#sourcecode()[```python
-  generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-  ```
-]
+Après entraînement du modèle, on crée un pipeline de génération.
+#figure(caption: "Pipeline de génération")[
+  #sourcecode()[```python
+    generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+    ```
+  ]]
+
 On peut maintenant utiliser le modèle pour terminer un début de proverbes:
 
-#sourcecode()[```python
+#figure(caption: "Génération de proverbes")[
+  #sourcecode()[```python
+    prompt = "A"
+    results = generator(prompt, max_length=max_length, num_return_sequences=3, do_sample=True, temperature=0.7)
 
-  prompt = "A"
-  results = generator(prompt, max_length=max_length, num_return_sequences=3, do_sample=True, temperature=0.7)
-
-  for i, result in enumerate(results):
-      print(result['generated_text'])
-  ```
-]
+    for i, result in enumerate(results):
+        print(result['generated_text'])
+    ```
+  ]]
 
 Quelques proverbes obtenus:
 - A nice dog is a dog.
@@ -160,9 +185,9 @@ Quelques proverbes obtenus:
 
 
 = Analyse des résultats
-Les données de sortie étant des proverbes, elles sont difficilement évaluable et comparable et sont sujettes à l'appréciation humaine.
+Les données de sortie étant des proverbes, elles sont difficilement évaluables et comparables, et sont sujettes à l'appréciation humaine.
 
-Ainsi nous donnerons quelques résultats non triés à titre d'exemple. Puis dans une seconde partie, nous détaillerons une expérience que nous avons réalisé.
+Ainsi nous donnerons quelques résultats non filtrés à titre d'exemple, issus du fine tuning de différents modèles que nous commenterons. Puis dans une seconde partie, nous détaillerons une expérience que nous avons réalisé.
 
 == Entraînement sur les proverbes anglais
 On utilise ici les deux sources :
@@ -171,42 +196,43 @@ On utilise ici les deux sources :
 
 Pour rappel, cette base de données représente 3208 proverbes originaux en anglais.
 === Modèle de départ `facebook/opt-125m`
-Proverbes obtenus à partir de "A" :
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [A man's only dead when he eats his own. ], [Intéressant],
-  [A man can make a woman forget her brother's death. ], [Pas un proverbe],
-  [A man's heart is full of gold. ], [Pas un proverbe],
-  [A good thing is a good thing. ], [Pas un proverbe],
-  [A woman’s dream is to be a widow. ], [Etrange],
-  [A man dies in the wind, a horse dies in the wind ], [Pas un proverbe],
-  [A good example of a good example of a good example of a bad example of a bad example of a bad example. ],
-  [Incohérent],
+#figure(caption: [En parant de "A"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [A man's only dead when he eats his own. ], [Intéressant],
+    [A man can make a woman forget her brother's death. ], [Pas un proverbe],
+    [A man's heart is full of gold. ], [Pas un proverbe],
+    [A good thing is a good thing. ], [Pas un proverbe],
+    [A woman’s dream is to be a widow. ], [Etrange],
+    [A man dies in the wind, a horse dies in the wind ], [Pas un proverbe],
+    [A good example of a good example of a good example of a bad example of a bad example of a bad example. ],
+    [Incohérent],
 
-  [A few days before you start a new one, you will be remembered for a long time. ],
-  [Incohérent],
+    [A few days before you start a new one, you will be remembered for a long time. ],
+    [Incohérent],
 
-  [A little of light can be a good thing ], [Pas un proverbe],
-)
+    [A little of light can be a good thing ], [Pas un proverbe],
+  )
+]
 
 
-
-Proverbes obtenus à partir de "Some" :
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [Some people have a hard time keeping a family man. ], [Intéressant],
-  [Some people are good, some people are good. ], [Incohérent],
-  [Some people are lucky to live in a tree. ], [Intéressant],
-  [Some of them are to be proud of their first friend. ], [Intéressant],
-  [Some times the best is when you are there to be with. ], [Incohérent],
-  [Some people have a disease. ], [Etrange],
-  [Some people are better than others. ], [Intéressant],
-  [Some of us are better than others ], [Intéressant],
-  [Some people are too silly to forget. ], [Intéressant],
-  [Some of those is nothing compared to the sum of them ], [Intéressant],
-)
+#figure(caption: [En parant de "Some"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [Some people have a hard time keeping a family man. ], [Intéressant],
+    [Some people are good, some people are good. ], [Incohérent],
+    [Some people are lucky to live in a tree. ], [Intéressant],
+    [Some of them are to be proud of their first friend. ], [Intéressant],
+    [Some times the best is when you are there to be with. ], [Incohérent],
+    [Some people have a disease. ], [Etrange],
+    [Some people are better than others. ], [Intéressant],
+    [Some of us are better than others ], [Intéressant],
+    [Some people are too silly to forget. ], [Intéressant],
+    [Some of those is nothing compared to the sum of them ], [Intéressant],
+  )
+]
 
 / Intéressants: 9
 / Etranges: 2
@@ -214,133 +240,149 @@ Proverbes obtenus à partir de "Some" :
 / Incohérents: 4
 
 
-On constate que certains résultats sont incohérents ou étrange. Certains proverbes ressemblent plus à des vérités générales et on trouve quelques proverbes intéressants.
+On constate que certains résultats sont incohérents ou étranges. Certains proverbes ressemblent plus à des vérités générales et on trouve quelques proverbes intéressants.
 
 === Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
-Les données sélectionnées ne sont pas assez importante pour obtenir des résultats satisfaisants avec ce modèle.
+Les données sélectionnées ne sont pas assez importantes pour obtenir des résultats satisfaisants avec ce modèle.
 
-Exemple de sorties pour "This" :
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [This is the story of an old woman.], [Pas un proverbe],
-  [This is the way of the world.], [Pas un proverbe],
-  [This is the best.], [Pas un proverbe],
-  [This is the way to get your money's worth.], [Pas un proverbe],
-  [This is the day.], [Pas un proverbe],
-  [This is what you call a new dress.], [Pas un proverbe],
-  [This is a story about a little girl.], [Pas un proverbe],
-  [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.],
-  [Pas un proverbe],
+#figure(caption: [En parant de "This"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [This is the story of an old woman.], [Pas un proverbe],
+    [This is the way of the world.], [Pas un proverbe],
+    [This is the best.], [Pas un proverbe],
+    [This is the way to get your money's worth.], [Pas un proverbe],
+    [This is the day.], [Pas un proverbe],
+    [This is what you call a new dress.], [Pas un proverbe],
+    [This is a story about a little girl.], [Pas un proverbe],
+    [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.],
+    [Pas un proverbe],
 
-  [This is what happens when we start out on the wrong path.],
-  [Pas un proverbe],
+    [This is what happens when we start out on the wrong path.],
+    [Pas un proverbe],
 
-  [This is my favourite drink.], [Pas un proverbe],
-)
+    [This is my favourite drink.], [Pas un proverbe],
+  )
 
+]
 / Intéressants: 0
 / Etrange: 0
 / Pas un proverbe: 10
 / Incohérents: 0
 
 
-Le modèle de base étant plus important, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants.
+Le modèle de base étant plus important et donc déjà plus entraîné, il ne crée pas de résultat incohérent comme le précédent, mais le dataset utilisé est trop petit pour créer des proverbes intéressants. Peu de proverbes commencent par "Some" dans le dataset. ($4 / 3208 approx #calc.round(100 * 4 / 3208, digits: 2) %$)
 
 == Entraînement sur les proverbes traduits
 === Modèle de départ `facebook/opt-125m`
-On entraîne d'abord sur *20000* proverbes.
+On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, digits: 2) %$).
+#figure(caption: [En parant de "Some"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [Some men are good at it, some are bad at it, and some are good at it.],
+    [Incohérent],
 
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [Some men are good at it, some are bad at it, and some are good at it.],
-  [Incohérent],
+    [Some day people will get one.], [Pas un proverbe],
+    [Some days a man wears a leather jacket and a woman wears a leather garment.],
+    [Pas un proverbe],
 
-  [Some day people will get one.], [Pas un proverbe],
-  [Some days a man wears a leather jacket and a woman wears a leather garment.],
-  [Pas un proverbe],
+    [Somehow the worst person in the world can make the best at things.],
+    [Étrange],
 
-  [Somehow the worst person in the world can make the best at things.],
-  [Étrange],
+    [Somehow, I am not a thief.], [Pas un proverbe],
+    [Some people are more beautiful than others.], [Pas un proverbe],
+    [Some day, the sun will rise on a mountain.], [Incohérent],
+    [Someones got a good idea and they're good at it.], [Pas un proverbe],
+    [Some men have a heart to die for.], [Intéressant],
+    [Somehow it looks like a human's ear.], [Incohérent],
+  )
+]
+#figure(caption: [En parant de "A"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [A dog is a beast of a mind.], [Incohérent],
+    [A man who makes his wife cry is a thief.], [Étrange],
+    [A man's heart is not a dog's tongue.], [Incohérent],
+    [A girl may be a good girl, but she has a better chance of getting married.],
+    [Étrange],
 
-  [Somehow, I am not a thief.], [Pas un proverbe],
-  [Some people are more beautiful than others.], [Pas un proverbe],
-  [Some day, the sun will rise on a mountain.], [Incohérent],
-  [Someones got a good idea and they're good at it.], [Pas un proverbe],
-  [Some men have a heart to die for.], [Intéressant],
-  [Somehow it looks like a human's ear.], [Incohérent],
-)
-)
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [A dog is a beast of a mind.], [Incohérent],
-  [A man who makes his wife cry is a thief.], [Étrange],
-  [A man's heart is not a dog's tongue.], [Incohérent],
-  [A girl may be a good girl, but she has a better chance of getting married.],
-  [Étrange],
+    [A man who has never seen a woman is a man.], [Incohérent],
+    [A house that is just a house is not a house that is a house.],
+    [Incohérent],
 
-  [A man who has never seen a woman is a man.], [Incohérent],
-  [A house that is just a house is not a house that is a house.], [Incohérent],
-  [A man who will not sleep for an hour, will not sleep for an hour.],
-  [Incohérent],
+    [A man who will not sleep for an hour, will not sleep for an hour.],
+    [Incohérent],
 
-  [A man cannot take a wife.], [Pas un proverbe],
-  [A man who eats meat will not be a judge.], [Étrange],
-  [A bit of good luck in life is better than nothing.], [Intéressant],
-)
+    [A man cannot take a wife.], [Pas un proverbe],
+    [A man who eats meat will not be a judge.], [Étrange],
+    [A bit of good luck in life is better than nothing.], [Intéressant],
+  )
+]
 
-LES DEUX TABLEAUX PRÉCÉDENTS ONT ÉTÉ FAIT PAR CHATGPT ET PAS MOI.
-
+#line(start: (0cm, 0cm), end: (15cm, 0cm), stroke: red)
+Pas ouf ces résultats, faudrait réentrainer sur moins de données et savoir l'expliquer
+#line(start: (0cm, 0cm), end: (15cm, 0cm), stroke: red)
 
 === Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 La RAM disponible ne nous a permis que de sélectionner un maximum de 5000 proverbes.
 
 Cependant, on obtient quand même des résultats plus intéressants qu'avec $3208$ proverbes
 
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [A man's name is his life.], [Intéressant],
-  [A man who has never taken a step should never be trusted.], [Intéressant],
-  [A great king cannot be a great man.], [Intéressant],
-  [A woman is hard to handle, but easy to cheat.], [Étrange],
-  [A dog's nose is better than a man's eyes.], [Intéressant],
-  [A woman who has a good head cannot be a fool.], [Intéressant],
-  [A bird from a city is a nesting place for many.], [Incohérent],
-  [A little knowledge is better than a great ignorance.], [Intéressant],
-  [A man who speaks of a hundred will be thought a hundred.], [Incohérent],
-  [A man should not be too ambitious.], [Intéressant],
-)
+#figure(caption: [En parant de "Some"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [Some men are born to lead, and some to follow.], [Intéressant],
+    [Some men are so proud of their looks that they never look at the rest of their faces.],
+    [Étrange],
 
-#table(
-  columns: 2,
-  [Proverbe], [Commentaire],
-  [Some men are born to lead, and some to follow.], [Intéressant],
-  [Some men are so proud of their looks that they never look at the rest of their faces.],
-  [Étrange],
+    [Someone will not be able to find a wife whom his father chooses.],
+    [Pas un proverbe],
 
-  [Someone will not be able to find a wife whom his father chooses.],
-  [Pas un proverbe],
+    [Some things are good for the body, but not for the stomach.],
+    [Intéressant],
 
-  [Some things are good for the body, but not for the stomach.], [Intéressant],
-  [Some are born with the gift of knowledge, and some with the gift of ignorance.],
-  [Intéressant],
+    [Some are born with the gift of knowledge, and some with the gift of ignorance.],
+    [Intéressant],
 
-  [Some folks make their own pies, and some do not.], [Pas un proverbe],
-  [Some people call the wind the sun's enemy.], [Incohérent],
-  [Some are wiser than they know. Humor as a way of life is also a part of the world I have to live in.],
-  [Incohérent],
+    [Some folks make their own pies, and some do not.], [Pas un proverbe],
+    [Some people call the wind the sun's enemy.], [Incohérent],
+    [Some are wiser than they know. Humor as a way of life is also a part of the world I have to live in.],
+    [Incohérent],
 
-  [Some are born great, but some become great by their wit.], [Intéressant],
-  [Someone is not what you think about him; you think about him.], [Incohérent],
-)
+    [Some are born great, but some become great by their wit.], [Intéressant],
+    [Someone is not what you think about him; you think about him.],
+    [Incohérent],
+  )
+]
+#figure(caption: [En parant de "A"])[
+  #table(
+    columns: 2,
+    [Proverbe], [Commentaire],
+    [A man's name is his life.], [Intéressant],
+    [A man who has never taken a step should never be trusted.], [Intéressant],
+    [A great king cannot be a great man.], [Intéressant],
+    [A woman is hard to handle, but easy to cheat.], [Étrange],
+    [A dog's nose is better than a man's eyes.], [Intéressant],
+    [A woman who has a good head cannot be a fool.], [Intéressant],
+    [A bird from a city is a nesting place for many.], [Incohérent],
+    [A little knowledge is better than a great ignorance.], [Intéressant],
+    [A man who speaks of a hundred will be thought a hundred.], [Incohérent],
+    [A man should not be too ambitious.], [Intéressant],
+  )
+]
+
 / Intéressants: 11
 / Etranges: 2
 / Incohérents: 5
 / Pas un proverbe: 2
 
-Comme précédemment, ce modèle peu de résultat incohérents. On constate qu'on obtient des résultats plus intéressant avec ce dataset plus important.
+Comme précédemment, ce modèle produit peu de résultat incohérents. On constate qu'on obtient des résultats plus intéressant avec ce dataset plus important, plus adapté à la taille du modèle de base.
+
+== Expérience avec des humains
+A titre d'expérience, nous avons rassemblé quelques dizaines de proverbes originaux et générés par nos modèles. (`facebook/opt-125m` sur $approx 15000$ proverbes)
 
 = Conclusion
