@@ -97,18 +97,18 @@ def load_data_with_topics():
     data[file] = []
     for line in lines:
         nline = line.replace("{", "")
-        print("nline1 = ", nline)
+        # print("nline1 = ", nline)
         nline = nline.replace("],", "]")
-        print("nline2 = ", nline)
+        # print("nline2 = ", nline)
         nline = nline.replace("}", "")
-        print("nline3 = ", nline)
+        # print("nline3 = ", nline)
         nline = nline.replace('"', "")
-        print("nline4 = ", nline)
+        # print("nline4 = ", nline)
         nline = nline.replace("topics:", "### topics :")
-        print("nline5 = ", nline)
+        # print("nline5 = ", nline)
         nline = nline.replace("proverb:", "\n\n### proverb: ")
 
-        print("nlinef = ", nline)
+        # print("nlinef = ", nline)
 
         data[file].append(nline.strip())
         
