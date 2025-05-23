@@ -209,9 +209,7 @@ Pour rappel, cette base de données représente 3208 proverbes originaux en angl
     [A good example of a good example of a good example of a bad example of a bad example of a bad example. ],
     [Incohérent],
 
-    [A few days before you start a new one, you will be remembered for a long time. ],
-    [Incohérent],
-
+    [A few days before you start a new one, you will be remembered for a long time. ], [Incohérent],
     [A little of light can be a good thing ], [Pas un proverbe],
   )
 ]
@@ -256,12 +254,8 @@ Les données sélectionnées ne sont pas assez importantes pour obtenir des rés
     [This is the day.], [Pas un proverbe],
     [This is what you call a new dress.], [Pas un proverbe],
     [This is a story about a little girl.], [Pas un proverbe],
-    [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.],
-    [Pas un proverbe],
-
-    [This is what happens when we start out on the wrong path.],
-    [Pas un proverbe],
-
+    [This is the day the Lord hath spoken. It is the day that the Lord hath spoken.], [Pas un proverbe],
+    [This is what happens when we start out on the wrong path.], [Pas un proverbe],
     [This is my favourite drink.], [Pas un proverbe],
   )
 
@@ -281,16 +275,10 @@ On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, di
   #table(
     columns: 2,
     [Proverbe], [Commentaire],
-    [Some men are good at it, some are bad at it, and some are good at it.],
-    [Incohérent],
-
+    [Some men are good at it, some are bad at it, and some are good at it.], [Incohérent],
     [Some day people will get one.], [Pas un proverbe],
-    [Some days a man wears a leather jacket and a woman wears a leather garment.],
-    [Pas un proverbe],
-
-    [Somehow the worst person in the world can make the best at things.],
-    [Étrange],
-
+    [Some days a man wears a leather jacket and a woman wears a leather garment.], [Pas un proverbe],
+    [Somehow the worst person in the world can make the best at things.], [Étrange],
     [Somehow, I am not a thief.], [Pas un proverbe],
     [Some people are more beautiful than others.], [Pas un proverbe],
     [Some day, the sun will rise on a mountain.], [Incohérent],
@@ -306,25 +294,21 @@ On entraîne d'abord sur *20000* proverbes ($#calc.round(100 * 20000 / 35000, di
     [A dog is a beast of a mind.], [Incohérent],
     [A man who makes his wife cry is a thief.], [Étrange],
     [A man's heart is not a dog's tongue.], [Incohérent],
-    [A girl may be a good girl, but she has a better chance of getting married.],
-    [Étrange],
-
+    [A girl may be a good girl, but she has a better chance of getting married.], [Étrange],
     [A man who has never seen a woman is a man.], [Incohérent],
-    [A house that is just a house is not a house that is a house.],
-    [Incohérent],
-
-    [A man who will not sleep for an hour, will not sleep for an hour.],
-    [Incohérent],
-
+    [A house that is just a house is not a house that is a house.], [Incohérent],
+    [A man who will not sleep for an hour, will not sleep for an hour.], [Incohérent],
     [A man cannot take a wife.], [Pas un proverbe],
     [A man who eats meat will not be a judge.], [Étrange],
     [A bit of good luck in life is better than nothing.], [Intéressant],
   )
 ]
+/ Intéressants: 2
+/ Etrange: 4
+/ Pas un proverbe: 6
+/ Incohérents: 8
 
-#line(start: (0cm, 0cm), end: (15cm, 0cm), stroke: red)
-Pas ouf ces résultats, faudrait réentrainer sur moins de données et savoir l'expliquer
-#line(start: (0cm, 0cm), end: (15cm, 0cm), stroke: red)
+Sur cette nouvelle génération à partir de 20000 proverbes une majorité de proverbes non intéressants ont été généré. Sur d'autres générations (non représentées ici) les résultats varient avec plus de proverbes intéressants. Cela peut être du au mot de départ de la génération qui peut avoir trop de possibilités ou pas assez et qui essaie de déterminer le prochain mais sans grande cohérence.
 
 ==== Modèle de départ `TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T`
 La RAM disponible ne nous a permis que de sélectionner un maximum de 5000 proverbes.
@@ -336,26 +320,17 @@ Cependant, on obtient quand même des résultats plus intéressants qu'avec $320
     columns: 2,
     [Proverbe], [Commentaire],
     [Some men are born to lead, and some to follow.], [Intéressant],
-    [Some men are so proud of their looks that they never look at the rest of their faces.],
-    [Étrange],
-
-    [Someone will not be able to find a wife whom his father chooses.],
-    [Pas un proverbe],
-
-    [Some things are good for the body, but not for the stomach.],
-    [Intéressant],
-
-    [Some are born with the gift of knowledge, and some with the gift of ignorance.],
-    [Intéressant],
-
+    [Some men are so proud of their looks that they never look at the rest of their faces.], [Étrange],
+    [Someone will not be able to find a wife whom his father chooses.], [Pas un proverbe],
+    [Some things are good for the body, but not for the stomach.], [Intéressant],
+    [Some are born with the gift of knowledge, and some with the gift of ignorance.], [Intéressant],
     [Some folks make their own pies, and some do not.], [Pas un proverbe],
     [Some people call the wind the sun's enemy.], [Incohérent],
     [Some are wiser than they know. Humor as a way of life is also a part of the world I have to live in.],
     [Incohérent],
 
     [Some are born great, but some become great by their wit.], [Intéressant],
-    [Someone is not what you think about him; you think about him.],
-    [Incohérent],
+    [Someone is not what you think about him; you think about him.], [Incohérent],
   )
 ]
 #figure(caption: [En partant de "A"])[
@@ -612,10 +587,7 @@ A titre d'expérience, nous avons rassemblé $24$ proverbes originaux et génér
           calc.round(
             100
               * (
-                gen_correct
-                  + gen_incorrect
-                  + non_gen_correct
-                  + non_gen_incorrect
+                gen_correct + gen_incorrect + non_gen_correct + non_gen_incorrect
               )
               / prov_times_answer,
             digits: 3,
@@ -636,9 +608,7 @@ On a ici entraîné le modèle `facebook/opt-125m` sur $20000$ proverbes ($#calc
     [The love of one is not always the love of all. ], [Intéressant],
     [If you love a woman, she will be love. ], [Etrange],
     [If you love a man, you will be love.], [Etrange],
-    [Love is love, and with love we can go out of love and into another. ],
-    [Etrange],
-
+    [Love is love, and with love we can go out of love and into another. ], [Etrange],
     [Love is the best proverb. ], [Intéressant],
     [It is a good proverb, but a proverb is better. ], [Incohérent],
     [Love has no love. ], [Etrange],
@@ -648,8 +618,24 @@ On a ici entraîné le modèle `facebook/opt-125m` sur $20000$ proverbes ($#calc
     [Incohérent],
 
     [The woman heches the dog, but the man sheches the dog. ], [Etrange],
-    [If love can't be found or found without fear, it can't be found without fear. ],
-    [Etrange],
+    [If love can't be found or found without fear, it can't be found without fear. ], [Etrange],
   )]
 
+/ Intéressants: 4
+/ Etrange: 6
+/ Pas un proverbe: 0
+/ Incohérents: 2
+
+Le plus long temps d'entraînement et la rajout de contexte a permis d'obtenir uniquement des proverbes malgré l'étrangeté ou l'incohérence de certains. On remarque que lors d'ajout d'un thème, la génération essaie souvent d'inclure le mot dans le proverbe généré.
+
 = Conclusion
+
+Dans l'ensemble, notre modèle renvoie des proverbes satisfants à la génération (que ce soit avec `facebook` ou `TinyLlama`). Dans certains cas les proverbes sont incohérents ou étranges. Cela peut provenir de notre base de données composée majoritairement de proverbes traduits vers l'anglais, donc pouvant perdre en précision, ou du modèle pré-entraîné pouvant faire des dérives de certains proverbes.
+
+La diffculté principale rencontrée est la `validation du modèle` car vérifier que les générations sont "correctes" est assez subjectif. Mais il était quand même aisé de différencier ceux "mauvais" de ceux de "meilleurs" qualité.
+
+Réaliser un sondage auprès de professeurs de SHS a aussi était un bon moyen de déterminer la `précision` du générateur car dans presque `un tiers des cas` il y avait une confusion entre vrai et généré.
+
+Pistes d'améliorations :
+- Trouver plus de proverbes issus d'un anglais natif et non traduit $arrow$ meilleure précsion dans la génération possible
+- Tester différents réseaux et déterminer lequel serait le plus adapaté à notre problème de génération
