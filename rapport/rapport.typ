@@ -195,6 +195,11 @@ On utilise ici les deux sources :
 - `proverbs_digest.txt`
 
 Pour rappel, cette base de données représente 3208 proverbes originaux en anglais.
+
+Nous allons classer les générations suivant 4 interprétations : _Intéressants_, _Etranges_, _Pas un proverbe_ et  _Incohérents_. Cela représente comment nous percevons ce qu'est un proverbe car, vous verrez en suivant, certaines générations donnent des sortes de vérités générales (que nous pointerons) qui ne ressemblent pas à ce qu'est un proverbe pour nous.
+
+*Cependant ces vérités générales se rapprochent de certains proverbes de notre base de données* (cf Conclusion).
+
 ==== Modèle de départ `facebook/opt-125m`
 #figure(caption: [En partant de "A"])[
   #table(
@@ -630,12 +635,12 @@ Le plus long temps d'entraînement et la rajout de contexte a permis d'obtenir u
 
 = Conclusion
 
-Dans l'ensemble, notre modèle renvoie des proverbes satisfants à la génération (que ce soit avec `facebook` ou `TinyLlama`). Dans certains cas les proverbes sont incohérents ou étranges. Cela peut provenir de notre base de données composée majoritairement de proverbes traduits vers l'anglais, donc pouvant perdre en précision, ou du modèle pré-entraîné pouvant faire des dérives de certains proverbes.
+Dans l'ensemble, notre modèle renvoie des proverbes satisfants à la génération (que ce soit avec `facebook` ou `TinyLlama`). Dans certains cas les proverbes sont incohérents ou étranges. Cela provient de _notre interprétation d'un proverbe_ car en regardant des proverbes de notre bdd, certaines générations sont ressemblantes, provenant probablement des traductions vers l'anglais pouvant perdre en précision.
 
-La diffculté principale rencontrée est la `validation du modèle` car vérifier que les générations sont "correctes" est assez subjectif. Mais il était quand même aisé de différencier ceux "mauvais" de ceux de "meilleurs" qualité.
+La diffculté principale rencontrée est la `validation du modèle` car vérifier que les générations sont "correctes" est assez subjectif. Mais nous avons quand même pu différencier ceux "mauvais" de ceux de "meilleurs" qualité en tant que proverbes. 
 
-Réaliser un sondage auprès de professeurs de SHS a aussi était un bon moyen de déterminer la `précision` du générateur car dans presque `un tiers des cas` il y avait une confusion entre vrai et généré.
+Réaliser un sondage auprès de professeurs de SHS a aussi été un bon moyen de déterminer la `précision` du générateur car dans presque `un tiers des cas` il y avait une confusion entre vrai et généré.
 
 Pistes d'améliorations :
-- Trouver plus de proverbes issus d'un anglais natif et non traduit $arrow$ meilleure précsion dans la génération possible
-- Tester différents réseaux et déterminer lequel serait le plus adapaté à notre problème de génération
+- Trouver plus de proverbes issus d'un anglais natif et non traduit $arrow$ meilleure précsion dans la génération possible (avoir moins de vérité générale ou autre),
+- Tester différents réseaux et déterminer lequel serait le plus adapaté à notre problème de génération.
