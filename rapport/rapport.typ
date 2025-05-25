@@ -18,7 +18,7 @@
     "SABLAYROLLES Guillaume",
   ),
   date: "31 Mars 2025",
-  subtitle: "Groupe L34",
+  subtitle: "Groupe L34-E",
   toc: true,
 )
 
